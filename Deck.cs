@@ -2,10 +2,13 @@ namespace Toolkit;
 
 public record Deck
 {
-    public static Deck CreateStandardDeck() => new Deck();
+    public static Deck CreateStandardDeck() => new Deck(); //factory method - guarantee that you create a valid instance of smth
+    //impossible to create an invalid deck through "CreateStandardDeck"
 
     private readonly List<Card> _cards;
 
+    public Deck(List<Card> fromCards) =>  _cards = fromCards;
+    
     private Deck()
     {
         _cards = new List<Card>();
@@ -33,13 +36,19 @@ public record Deck
 
     public Deck Split()
     {
-        throw new NotImplementedException("Split method is not implemented yet.");
+        Deck other = new Deck(_cards.Take(_cards.Count / 2).ToList());
+        _cards.RemoveRange(0, _cards.Count / 2);
+        return other;
+        //throw new NotImplementedException("Split method is not implemented yet.");
         // TODO: Implement the Split method to return a new Deck with half-ish of the cards.
     }
 
-    public Deck Cut()
+    public Deck Cut(int numberOfCards)
     {
-        throw new NotImplementedException("Cut method is not implemented yet.");
+        Deck other = new Deck(_cards.Take(numberOfCards).ToList());
+        _cards.RemoveRange(0, numberOfCards);
+        return other;
+        //throw new NotImplementedException("Cut method is not implemented yet.");
         // TODO: How is Cut different from Split? 
     }
 
@@ -52,10 +61,14 @@ public record Deck
         _cards.RemoveAt(0);
         return card;
     }
+    //null - not valid
+    //this - self-reference 
+    //exception - the exception (special kind of object) that has been thrown
+    //stack-like arrangement (void - list - card)
 
     public List<Card> Deal(int count)
     {
-        var dealtCards = [];
+        var dealtCards = new List<Card>();
         for (int i = 0; i < count; i++)
         {
             dealtCards.Add(DealOne());
@@ -64,4 +77,7 @@ public record Deck
     }
 
     public int Count => _cards.Count;
+    
+    public Card? TopCard => _cards.Count > 0? _cards[0]: null;
 }
+
