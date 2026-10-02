@@ -10,7 +10,7 @@ static void Show(string label, Deck deck)
 {
     var cards = deck.Deal(deck.Count);
     Console.WriteLine($"{label} ({cards.Count}):  {string.Join(" ", cards)}");
-    deck.AddCardsonTop(cards);
+    deck.AddCardsOnTop(cards);
 }
 
 var random = new Random(42);          // a fixed seed, so every run matches

@@ -7,10 +7,12 @@ public record Deck
 {
     public static Deck CreateStandardDeck() => new Deck(); //factory method - guarantee that you create a valid instance of smth
     //impossible to create an invalid deck through "CreateStandardDeck"
+    
+    public static Deck CreateEmpty() => new Deck(new List<Card>());
 
     private List<Card> _cards;
 
-    public Deck(List<Card> fromCards) =>  _cards = fromCards;
+    private Deck(List<Card> fromCards) =>  _cards = fromCards;
     
     private Deck()
     {
@@ -22,6 +24,7 @@ public record Deck
                 _cards.Add(new Card(suit, value));
             }
         }
+        
     }
 
     /// <summary>
@@ -107,11 +110,11 @@ public record Deck
     public int Count => _cards.Count;
 
     public void
-        AddCardsonTop(params List<Card> cards) //params allow deck.ACOT(op)(card), deck.ACOB(ottom) (a,b,c,d) and deck.ACOT(cards)
+        AddCardsOnTop(params List<Card> cards) //params allow deck.ACOT(op)(card), deck.ACOB(ottom) (a,b,c,d) and deck.ACOT(cards)
         => _cards = [..cards, .._cards]; //square brackets for lists
     //says to put cards before current cards
 
-    public void AddCardsonBottom(params List<Card> cards)
+    public void AddCardsOnBottom(params List<Card> cards)
         => _cards = [.. _cards, .. cards];
 
     public void InsertCardsRandomly(Random random, params List<Card> cards)

@@ -6,32 +6,31 @@ namespace Toolkit.Rules;
 /*
 To shuffle, I split the deck of cards in half, hold each half in one hand, and let the cards interweave from both halves.
 "var half = deck.Split();" creates one half of the deck of cards (the other half is just deck)
-"List<Card> result = [];" a collection for interweaved cards when they land as riffle
+"Deck result = Deck.CreateEmpty(); " - calling result a brand new, empty deck
 " while (half.Count > 0 && deck.Count > 0) //&& means both conditions are true
-              {
-                  var card1 = half.DealOne();
-                  if (card1 is not null)
-                      result.Add(card1);
+           
+              var count1 = random.Next(1, 4);
+   result.AddCardsOnBottom(half.Deal(count1));
 
-                  var card2 = deck.DealOne();
-                  if (card2 is not null)
-                      result.Add(card2);
-              }"
-    Meaning: when both halves of the deck are not empty (have > 0 cards) after you begin interweaving, and the cards are not nullable, then you add the cards to the result pile
-
+   var count2 = random.Next(1, 4);
+       result.AddCardsOnBottom(deck.Deal(count2));
+       
+    Meaning: when both halves of the deck are not empty (have > 0 cards) after you begin interweaving, you add count1 (giving a random number (from 1-4) of cards) from half to result and add count2 from deck to result
+    
     " if (half.Count > 0)
-                  result.AddRange(half.Deal(half.Count));
+                  result.AddCardsOnBottom(half.Deal(half.Count));
 
               if (deck.Count > 0)
-                  result.AddRange(deck.Deal(deck.Count));"
+                  result.AddCardsOnBottom(deck.Deal(deck.Count));"
 
     Meaning: if only one half has cards remaining (>0), deal all the remaining cards into the result pile
 
-    " deck.AddCardsonBottom(result);" - put all the cards back into the now-empty deck
+    " deck.AddCardsOnBottom(result.Deal(result.Count));" - put all the cards back into the now-empty deck
 
-    A way that the code differs from a person is that this code generates riffle perfectly every time (double identical cards on top of each other and being even), whereas a real riffle would release unevenly
+    A way that the code differs from a person is that although this code randomly interweaves cards from both halves, it only gives 1-4 cards, rather than real life, where this "randomness" could be more random in the number of cards dealt
     
-    I did not add any new members to Deck.Split() - DealOne(), Deal(), and AddCardsonBottom() were sufficient
+   I added CreateEmpty() to Deck, because Deck, rather than ShuffleAlgorithms, should handle building a Deck from scratch
+   
 */
 public static class ShuffleAlgorithms //static means you purely create collection of behaviors together under grouping
 
@@ -51,31 +50,33 @@ public static class ShuffleAlgorithms //static means you purely create collectio
             int j = random.Next(i+1);
             (cards[i], cards[j]) = (cards[j], cards[i]);
         }
-        deck.AddCardsonBottom(cards);
+        deck.AddCardsOnBottom(cards);
     }
     public static void Riffle(Deck deck, Random random)
     {
+        
         var half = deck.Split();
-            List<Card> result = [];
+        Deck result = Deck.CreateEmpty(); 
 
             while (half.Count > 0 && deck.Count > 0) //&& means both conditions are true
             {
-                var card1 = half.DealOne();
-                if (card1 is not null)
-                    result.Add(card1);
+                var count1 = random.Next(1, 4);
+                result.AddCardsOnBottom(half.Deal(count1));
 
-                var card2 = deck.DealOne();
-                if (card2 is not null)
-                    result.Add(card2);
+                var count2 = random.Next(1, 4);
+                    result.AddCardsOnBottom(deck.Deal(count2));
+               
             }
             
             if (half.Count > 0)
-                result.AddRange(half.Deal(half.Count));
+                result.AddCardsOnBottom(half.Deal(half.Count));
             
             if (deck.Count > 0)
-                result.AddRange(deck.Deal(deck.Count));
-            
-            deck.AddCardsonBottom(result);
+                result.AddCardsOnBottom(deck.Deal(deck.Count));
+
+            deck.AddCardsOnBottom(result.Deal(result.Count));
+
+
     }
         
 }
